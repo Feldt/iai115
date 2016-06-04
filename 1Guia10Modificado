@@ -1,0 +1,147 @@
+using System;
+
+public class Program
+{
+	//Ejercicio 1 Guia 10 --Modificado
+	
+	//original
+  /*Dadas las edades y género de 10 personas
+  calcule  e imprima edad promedio y la cantidad de personas del género femenino 
+  que están arriba de la  edad promedio.*/
+	
+	//Modificaciones
+	//permite cambiar la cantidad de personas a ingresar
+	//array Bidimensional STRING
+	//Métodos de lectura e impresiones para menos perdida de tiempo
+	// utilización de la clase object en métodos "personaliados"
+	//los métodos no usan STATIC por ello se hace una
+	//Instanciación de objetos en lugar de métodos éstaticos
+	// -- para un ahorro de código y tiempo
+	
+	
+  public static void Main()
+  {
+	  //variable(u objeto) 'p' creado apartir de la clase Proceso
+    Proceso p = new Proceso();
+	  //p.METODO dentro de la clase
+	  //éstas lineas de aca serían equivalentes a ; 
+	  //pocreso.Llenado(); 
+	  //proceso.Calcular();
+	  //proceso.Impresion();
+	  p.Llenado();
+	  p.Calcular();
+	  p.Impresion();
+  }
+}
+
+
+class Proceso {
+	//utilización de varables globales; 
+	//variables globales ; son aquellas de las que se tiene acceso desde dentro de la clase, 
+	//sin importar el método que se utilice, irán cambiando el valor según se vayan útilizando
+	int edadPromedio=0,sobreEdad=0;
+	String [][] prom ; //= new String[10][];
+	Leer l = new Leer();
+	TextosFijos t= new TextosFijos();
+	
+	public  void Llenado(){
+		//sólo se útiliza para verificar la cantidad de personas a ingresar
+		t.ir("El valor por defecto es 10, ", false);
+		String c=l.Cadena("¿Desea cambiarlo? ");
+		//si la cadena contien S o s significa que ha dicho que sí
+		//y se harán los cambios de longitud del array
+		if(c.Contains("s") | c.Contains("S")){
+			t.ir("¿cúantas personas desea ingresar?  ",false);
+			int longitud = l.Enteros(String.Empty);
+			prom = new String [longitud][];
+		//sino, se dejará con 10 personas
+		} else{
+			t.ir("El valor por defecto es 10",true);
+			prom = new String [10][];
+		}
+		//prom.Length -1 ; porque el método Length devuelve el valor total, en éste caso devolvería 10,
+		//pero nosotros sólo tenemos desde 0 a 9, el 10 no cuenta porque usamos el 0
+		for (int i = 0 ; i<=prom.Length -1;i++){
+			//inicializción del Array Bidimencional, con valores vacios,
+			//inicializa con "0" para que nuestro while entre y no deje pasar sino se cambia el valor en esa posicion.
+			prom [i]= new String[2] { String.Empty, "0" };
+			prom [i][0]=l.Cadena("Ingrese un Genero\tMasculino\tFemenino");
+			//no dejará avanzar sino ingresas un valor numerico ENTERO
+			//o una edad más "creible: 
+			while(int.Parse(prom[i][1])==0){
+				
+				prom[i][1]=l.Enteros("Ingrese la edad").ToString();
+			}
+		}
+	}
+	
+	//metodo calcular Promedio del genero Femenino
+	public void Calcular(){
+		int count =0; //variable de metodo
+		for (int i = 0 ; i<=prom.Length -1;i++){
+			//si el contiene f o F significa que es femenino
+			if(prom[i][0].Contains("f")|prom[i][0].Contains("F")){
+				//guardatá el promedio
+				edadPromedio+=int.Parse(prom[i][1]);
+				//contador aumentara para hacer el promedio después
+				count++;
+			}
+		}
+		//caculo de promedio (Sumatoria entre cantidad de datos)
+		edadPromedio/=count;
+		//calculo para la sobre edad, 
+		//¿cúantas personas del genero Femenino tienen sobre edad?
+		for (int i = 0 ; i<=prom.Length-1;i++){
+			if(prom[i][0].Contains("f")|prom[i][0].Contains("F")){
+				if(sobreEdad>edadPromedio)
+				sobreEdad++;
+			}
+		}
+		
+	}
+	
+	public void Impresion(){
+		//impresion rapida de variables globales con los datos necesitados
+		t.ir("El promedio del Genero Femenino es: "+ edadPromedio,true);
+		t.ir("Cantidad mujeres con un peso mayor al promedio: "+sobreEdad,true);
+	}
+
+}
+
+
+class TextosFijos{
+	//ir = Impresion Rapida
+	//el boolean es para saber si se hará en la misma linea o en otra
+	public void ir(Object mensaje, Boolean linea){
+		if(linea)
+			Console.WriteLine(mensaje.ToString());
+		else
+			Console.Write(mensaje.ToString());	
+	}
+
+}
+
+
+class Leer{
+	
+  public int Enteros(Object mensaje){
+	  //leer datos tipo int, validados para evitar errores al introducir letras
+	  //o que no se introduzca una edad adecuada.
+	  int numero;
+	  Console.WriteLine(mensaje.ToString());
+	  if (int.TryParse(Console.ReadLine(),out numero))
+		  return numero;
+	  else{
+		  Console.WriteLine("Ingrese una edad valida");
+		  return 0;
+	  }
+  }
+	
+
+ public String Cadena(Object mensaje){
+	  //recibe una cadena 
+	  Console.WriteLine(mensaje.ToString());
+	return Console.ReadLine();
+  }	
+	
+}
