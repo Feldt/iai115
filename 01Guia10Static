@@ -1,0 +1,133 @@
+using System;
+public class Program
+{
+    public static void Main()
+    {
+        //los metodos se cargan en orden logico.
+        Proceso.Longitud();
+        Proceso.LlenarArray();
+        Proceso.Promedio();
+        Proceso.sobrePromedio();
+        Proceso.imprimir();
+        Console.ReadKey();
+    }
+}
+public class Proceso
+{
+    //variables globales o variables de clase [ declaradas una vez y utilizables en toda la case]
+    //array tipo string porque asi se almacenara todo en un solo array bidimencional y no habra qe crear dos array para un mismo fin
+    public static String[][] datos = null;
+    public static double edadPromedio = 0;
+    public static int countFemenino = 0, num = 0;
+    
+    public static void Longitud()
+    {
+        String respuesta = String.Empty;
+        Leer.Cadenas("Desea Cambiar la longitud del Array", false, out respuesta);
+
+        //si la palabra ingresada inicia con si, SI, Si, s, S
+        if (respuesta.StartsWith("si") | respuesta.StartsWith("Si") | respuesta.StartsWith("SI") | respuesta.StartsWith("S") | respuesta.StartsWith("s"))
+        {
+            Leer.Enteros("Ingrese la cantidad nueva", false, out num);
+            //si el numero ingresado es mayor a cero (para qe no de error)
+            if (num > 0)
+                //el array tendra valores ingresados por el usuario
+                datos = new String[num][];
+            else
+            {
+                datos = new String[10][];
+                Textos.Ip("El Array tiene 10 valores (ingreso un valor negativo)", true);
+            }
+        }
+        else
+        {
+            Textos.Ip("El Array tiene 10 valores", true);
+            datos = new String[10][];
+        }
+    }
+    public static void LlenarArray()
+    {
+        //datos.length porque no se cuantos datos quiere ingresar el usuario
+        for (int j = 0; j < datos.Length; j++)
+        {
+            //inicializar los datos de las columnas en cada fila
+            datos[j] = new String[2] { String.Empty, String.Empty };
+            // variable . metodo 
+            Leer.Cadenas("Ingrese un genero", false, out datos[j][0]);
+            Textos.Ip(null, true);
+            Leer.Enteros("Ingrese la edad", false, out num);
+            datos[j][1] = num.ToString();
+        }
+    }
+
+    public static void Promedio()
+    {
+        for (int j = 0; j < datos.Length; j++)
+        {
+            edadPromedio += int.Parse(datos[j][1]);
+        }
+        edadPromedio /= datos.Length;
+    }
+
+    public static void sobrePromedio()
+    {
+        for (int j = 0; j < datos.Length; j++)
+        {
+            //si el valor en el array inicia con Fe de Femenino o F
+            if (datos[j][0].StartsWith("Fe") | datos[j][0].StartsWith("fe") | datos[j][0].StartsWith("f") | datos[j][0].StartsWith("F"))
+            {
+                //si sobre pasa el promedio total es porque tiene sobre edad
+                if (edadPromedio < (int.Parse(datos[j][1])))
+                    //un simple contador
+                    countFemenino++;
+            }
+        }
+    }
+    public static void imprimir()
+    {
+        Textos.Ip("El promedio total es: " + edadPromedio, true);
+        Textos.Ip("Cantidad de personas del genero Femenino coon Sobre Edad es: " + countFemenino,true);
+    }
+}
+    public class Leer
+    {
+        public static void Enteros(Object mensaje, Boolean linea, out int numero)
+        {
+            
+            if (linea)
+            {
+                Console.WriteLine(mensaje);
+                int.TryParse(Console.ReadLine(), out numero);
+            }
+            else
+            {
+                Console.Write(mensaje + " :\t");
+                int.TryParse(Console.ReadLine(), out numero);
+            }
+            if (numero == 0)
+                Textos.Ip("numero no valido ; valor = 0 ", true);
+        }
+        public static void Cadenas(Object mensaje, Boolean linea, out String cadena)
+        {
+            if (linea)
+            {
+                Console.WriteLine(mensaje);
+                cadena = Console.ReadLine();
+            }
+            else
+            {
+                Console.Write(mensaje + " :\t");
+                cadena = Console.ReadLine();
+            }
+        }
+    }
+    public class Textos
+    {
+        public static void Ip(Object mensaje, Boolean linea)
+        {
+            if (linea)
+                Console.WriteLine(mensaje);
+            else
+                Console.Write(mensaje);
+        }
+    }
